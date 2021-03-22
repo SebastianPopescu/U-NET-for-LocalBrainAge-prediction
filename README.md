@@ -44,7 +44,7 @@ ython3 full_testing_script.py --num_encoding_layers=2 --num_filters=64 --num_sub
 
 ## Pre-trained Models
 
-The pre-trained model is situated in the saved_model_3D_UNET_Dropout folder
+The pre-trained model can be downloaded [here](https://drive.google.com/drive/folders/1htVlUTyWI2fN6Hz0inBJevlYV0zruOc2?usp=sharing) and should be placedinside the saved_model_3D_UNET_Dropout/iteration_870000/ folder
 
 
 
