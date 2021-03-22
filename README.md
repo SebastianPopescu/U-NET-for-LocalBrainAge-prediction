@@ -4,7 +4,7 @@
 
 This repository is the official implementation of [A U-Net model for Local Brain Age](https://www.biorxiv.org/content/10.1101/2021.01.26.428243v1). 
 
->📋  Optional: include a graphic explaining your approach/main result, bibtex entry, link to demos, blog posts and tutorials
+>📋  ![U-Net Architecture for Local Brain Age Prediction](squeeze_excite_architecture.pdf)
 
 ## Requirements
 
