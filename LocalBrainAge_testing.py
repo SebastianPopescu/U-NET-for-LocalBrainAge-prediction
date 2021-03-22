@@ -16,7 +16,7 @@ from sklearn.cluster import  KMeans
 from sklearn.preprocessing import StandardScaler
 DTYPE=tf.float32
 import subprocess
-from UNET_Dropout_ROI_Regression_Context_Enhanced import UNET_Dropout_ROI_Context_Enhanced
+from LocalBrainAge_training import UNET_Dropout_ROI_Context_Enhanced
 from loading_data import *
 from sklearn.model_selection import KFold
 
@@ -35,18 +35,17 @@ def absoluteFilePaths(dirpath):
 if __name__=='__main__':
 
 	parser = argparse.ArgumentParser()
-	parser.add_argument('--num_encoding_layers', type = int, default = 2)
-	parser.add_argument('--num_filters', type = int, default = 64)
-	parser.add_argument('--num_subjects', type = int, default = 2)
-	parser.add_argument('--num_voxels_per_subject', type = int , default = 1)
-	parser.add_argument('--filepath_csv', type = str)	
-	parser.add_argument('--dirpath_gm', type = str)
-	parser.add_argument('--dirpath_wm', type = str)
-	parser.add_argument('--dataset_name', type = str)
+	parser.add_argument('--num_encoding_layers', type = int, default = 2, help = 'keep the default setting')
+	parser.add_argument('--num_filters', type = int, default = 64, help = 'keep the default setting')
+	parser.add_argument('--num_subjects', type = int, default = 2, help = 'keep the default setting')
+	parser.add_argument('--num_voxels_per_subject', type = int , default = 1, help = 'keep the default setting')
+	parser.add_argument('--filepath_csv', type = str, help = 'the location of the .csv file containing the meta-data assocated to the dataset in cause')	
+	parser.add_argument('--dirpath_gm', type = str, help = 'the location of the directory containing the smwc1*.nii.gz files')
+	parser.add_argument('--dirpath_wm', type = str, help = 'the location of the directory containing the smwc1*.nii.gz files')
+	parser.add_argument('--dataset_name', type = str, help = 'the name of the dataset in cause, it will influence where the results are written')
 	args = parser.parse_args()
 
 	#### load metadata ####
-
 	########################################################
 	##### Input the path of your .csv file here ############
 	########################################################
@@ -55,7 +54,7 @@ if __name__=='__main__':
 
 	#############################################################################################################
 	### Warning -- the .csv file has to have the below mentioned column names, alternatively change the code ####
-	### Column names -- ['Subject', 'Age', 'Gender'] ############################################################
+	#################### Column names -- ['Subject', 'Age', 'Gender'] ###########################################
 	#############################################################################################################
 
 	print(info_subjects.head)
@@ -77,7 +76,6 @@ if __name__=='__main__':
 		list_of_nifty_files_wm = list_overall_wm_files,  subject_info = info_subjects.copy(), list_extract_subjects = list_subjects_testing)
 
 
-
 	df_testing =  pd.DataFrame(columns=['Subject', 'Age', 'Gender','GM','WM'])
 	df_testing['Subject'] = dict_X_testing_names.values()
 	df_testing['Age'] = dict_Y_testing.values()
@@ -87,18 +85,13 @@ if __name__=='__main__':
 
 	df_testing.to_csv('./testing_set_subject_information.csv', index=False)
 
-	### TODO -- input the mean age of the training dataset ###
-	mean_age = ??
+	mean_age = 49.994838393731634
 
 	print('**** mean age of dataset *****')
 	print(mean_age)
 
-	for key in dict_Y_training.keys():
-		dict_Y_training[key]-=mean_age
 
-	### TODO -- get the brain mask and upload it on github ###
-
-	mask_object = nib.load('./brain_mask.nii')
+	mask_object = nib.load('./data/brain_mask.nii')
 	mask_data = mask_object.get_data()
 
 
@@ -110,7 +103,7 @@ if __name__=='__main__':
 		num_filters = num_filters, dim_filter = 3 , num_stride = 1,
 		use_epistemic_uncertainty = True,
 		size_cube_input = 52, size_cube_output = 12, learning_rate = 1e-5, num_layers_same_scale = 2,  
-		import_model = True, iteration_restored = 130000, unet_type = '3D', keep_prob = 0.8, mean_age = mean_age,
+		import_model = True, iteration_restored = 870000, unet_type = '3D', keep_prob = 0.8, mean_age = mean_age,
 		num_averaged_gradients = 12,
 		num_subjects = args.num_subjects, num_voxels_per_subject = args.num_voxels_per_subject, testing_time = False)
 	obiect.session_TF(dict_X_testing, dict_Y_testing, dict_gender_testing,
