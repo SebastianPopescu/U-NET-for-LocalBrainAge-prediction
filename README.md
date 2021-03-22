@@ -1,8 +1,8 @@
->📋  A template README.md for code accompanying a Machine Learning paper
+>📋  Accompanying code for "A U-Net model for Local Brain Age"
 
-# My Paper Title
+# A U-Net model for Local Brain Age
 
-This repository is the official implementation of [My Paper Title](https://arxiv.org/abs/2030.12345). 
+This repository is the official implementation of [A U-Net model for Local Brain Age](https://www.biorxiv.org/content/10.1101/2021.01.26.428243v1). 
 
 >📋  Optional: include a graphic explaining your approach/main result, bibtex entry, link to demos, blog posts and tutorials
 
@@ -11,83 +11,62 @@ This repository is the official implementation of [My Paper Title](https://arxiv
 To install requirements:
 
 ```setup
-pip install -r requirements.txt
+pip install tensorflow-gpu==1.15.0
+pip install nibabel
 ```
 
->📋  Describe how to set up the environment, e.g. pip/conda/docker commands, download datasets, etc...
+>📋  One also needs to install [spm12](https://www.fil.ion.ucl.ac.uk/spm/software/spm12/), besides CUDA 10.1 AND cuDNN 7.6.5 to enable GPU capabilities for Tensorflow
 
 ## Training
 
-To train the model(s) in the paper, run this command:
+To train the model in the paper, run this command:
 
 ```train
-python train.py --input-data <path_to_data> --alpha 10 --beta 20
+python3 full_training_script.py --num_encoding_layers=2 --num_filters=64 --num_subjects=2 --num_voxels_per_subject=2 --location_metadata=$absolute_path_of_metadata_for_dataset --dirpath_gm=$absolute_path_of_directory_of_spm12_processed_gray_matter_nifti_files
+--dirpath_wm=$absolute_path_of_directory_of_spm12_processed_white_matter_nifti_files --dataset_name=$dataset_name
 ```
 
->📋  Describe how to train the models, with example commands on how to train the models in your paper, including the full training procedure and appropriate hyperparameters.
+>📋  The above command line function start training the U-Net model provided a dataset that already went through spm12's Dartel pipeline. One can get the folder with gm and wm nifti files by using  batched_spm12_dartel(img_dir, name_of_dataset, size_batch) function inside dartel_pipeline.py. We mention that the training process is quite lengthy (around 3 weeks on a GPU) if one wants the best possible performance.
 
 ## Evaluation
 
-To evaluate my model on ImageNet, run:
+To evaluate our already trained U-Net model on your dataset you need run the following command (if python throws error such as too many files opened, just type ulimit -n 10000 on the command line)
 
 ```eval
-python eval.py --model-file mymodel.pth --benchmark imagenet
+ython3 full_testing_script.py --num_encoding_layers=2 --num_filters=64 --num_subjects=2 --num_voxels_per_subject=2 --location_metadata=$absolute_path_of_metadata_for_dataset --dirpath_gm=$absolute_path_of_directory_of_spm12_processed_gray_matter_nifti_files
+--dirpath_wm=$absolute_path_of_directory_of_spm12_processed_white_matter_nifti_files --dataset_name=$dataset_name
 ```
 
->📋  Describe how to evaluate the trained models on benchmarks reported in the paper, give commands that produce the results (section below).
+>📋As mentioned in the paper, the brain scans have to go through the Dartel pipeline in spm12.  
+>in "spm_brain_age_preprocess_b23d.m" you need to change "/data/my_programs/spm12" path to suit the location of where your local spm12 is installed. 
+>In LocalBrainAge_testing.py the format of the .csv file containing meta-data has to have the following column names "Age", "Gender", "Subject", alternatively modify the code at lines 62-64.
+>in your local spm12, you need to copy the files situated in the templates folder (Template_{1,2,3,4,5,6}.nii) to "$your_spm12_folder/templates/".
 
 ## Pre-trained Models
 
-You can download pretrained models here:
-
-- [My awesome model](https://drive.google.com/mymodel.pth) trained on ImageNet using parameters x,y,z. 
-
->📋  Give a link to where/how the pretrained models can be downloaded and how they were trained (if applicable).  Alternatively you can have an additional column in your results table with a link to the models.
-
-## Results
-
-Our model achieves the following performance on :
-
-### [Image Classification on ImageNet](https://paperswithcode.com/sota/image-classification-on-imagenet)
-
-| Model name         | Top 1 Accuracy  | Top 5 Accuracy |
-| ------------------ |---------------- | -------------- |
-| My awesome model   |     85%         |      95%       |
-
->📋  Include a table of results from your paper, and link back to the leaderboard for clarity and context. If your main result is a figure, include that figure and link to the command or notebook to reproduce it. 
+The pre-trained model is situated in the saved_model_3D_UNET_Dropout folder
 
 
-## Contributing
 
->📋  Pick a licence and describe how to contribute to your code repository. 
+
+## Citing this work
+
+>📋 If you use these tools or datasets in your publications, please consider citing the accompanying paper with a BibTeX entry similar to the following:
+
+```
+@article{popescu2021u,
+  title={A U-Net model of local brain-age},
+  author={Popescu, Sebastian Gabriel and Glocker, Ben and Sharp, David J and Cole, James H},
+  journal={bioRxiv},
+  year={2021},
+  publisher={Cold Spring Harbor Laboratory}
+}
+
+```
 
 
 
 
 
-# U-NET-for-LocalBrainAge-prediction
-Code for upcoming paper "A U-NET model for Local Brain-Age"
-
-How to use:
-
-As mentioned in the paper, the brain scans have to go through the Dartel pipeline in spm12. 
-
-in "spm_brain_age_preprocess_b23d.m" you need to change "/data/my_programs/spm12" path to suit the location of where your local spm12 is installed.
-
-in your local spm12, you need to copy the files situated in the templates folder (Template_{1,2,3,4,5,6}.nii) to "$your_spm12_folder/templates/".
 
 
-Using LocalBrainAge_testing.py you can obtain new 3D heatmaps of local brain-age for new subjects. The file has the following arguments that you need to specify:
-
---filepath_csv = location of .csv file that contains the dataset metadata, look inside the .py file to find details regarding formating
---dirpath_gm = location of directory where the gray matter SPM12 segmentations are stored
---dirpath_wm = location of directory where the white matter SPM12 segmentations are stored
---dataset_name = name of your dataset, it just impacts the name of the location where all the subsequent .nii files get saved
-
-in LocalBrainAge_testing.py the format of the .csv file containing meta-data has to have the following column names "Age", "Gender", "Subject", alternatively modify the code at lines 62-64.
-
-
-Software prerequisite:
--- nibabel
--- tensorflow 1.15.0
--- spm12
