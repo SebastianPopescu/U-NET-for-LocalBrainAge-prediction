@@ -40,8 +40,8 @@ ython3 full_testing_script.py --num_encoding_layers=2 --num_filters=64 --num_sub
 >📋As mentioned in the paper, the brain scans have to go through the Dartel pipeline in spm12.  
 >in "spm_brain_age_preprocess_b23d.m" you need to change "/data/my_programs/spm12" path to suit the location of where your local spm12 is installed. 
 >In LocalBrainAge_testing.py the format of the .csv file containing meta-data has to have the following column names "Age", "Gender", "Subject", alternatively modify the code at lines 62-64.
->in your local spm12, you need to copy the files situated in the templates folder (Template_{1,2,3,4,5,6}.nii) to "$your_spm12_folder/templates/".
-
+>in your local spm12, you need to copy the files situated in the templates folder (Template_{1,2,3,4,5,6}.nii) to "$your_spm12_folder/templates/". Warning! On some workstations calling the above will only result in the spm12 preprocessing part going through and stopping after (without actually running the LocalBrainAge part)
+ If this happens, go in full_testing_script.py and comment out line 20 ( #batched_spm12_dartel(img_dir = args.dirpath_raw_data, name_of_dataset = args.dataset_name, size_batch = args.size_batch_preprocessing)) and then run again the above command line.
 ## Pre-trained Models
 
 The pre-trained model can be downloaded [here](https://drive.google.com/drive/folders/1htVlUTyWI2fN6Hz0inBJevlYV0zruOc2?usp=sharing) and should be placedinside the saved_model_3D_UNET_Dropout/iteration_870000/ folder
