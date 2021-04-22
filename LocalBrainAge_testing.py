@@ -105,6 +105,6 @@ if __name__=='__main__':
 		size_cube_input = 52, size_cube_output = 12, learning_rate = 1e-5, num_layers_same_scale = 2,  
 		import_model = True, iteration_restored = 870000, unet_type = '3D', keep_prob = 0.8, mean_age = mean_age,
 		num_averaged_gradients = 12,
-		num_subjects = args.num_subjects, num_voxels_per_subject = args.num_voxels_per_subject, testing_time = False)
+		num_subjects = args.num_subjects, num_voxels_per_subject = args.num_voxels_per_subject, testing_time = True)
 	obiect.session_TF(dict_X_testing, dict_Y_testing, dict_gender_testing,
 		dict_X_testing, dict_Y_testing, dict_gender_testing, mask_data, mask_object.affine, args.dataset_name, dict_X_testing_names)
